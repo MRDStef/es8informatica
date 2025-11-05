@@ -1,30 +1,77 @@
 <?php
+session_start();
 
-    session_start();
-    $_SESSION["counter"] = 0;
-    if($_SERVER["REQUEST_METHOD"] == "GET"){
-        $_SESSION["counter"]++;
-        
-        $id = $_GET["id"];
-        
-        
-    }
+$prodotti = [
+    1 => ["nome" => "Mela", "prezzo" => 0.5],
+    2 => ["nome" => "Banana", "prezzo" => 0.3],
+    3 => ["nome" => "Latte", "prezzo" => 1.2],
+    4 => ["nome" => "Pane", "prezzo" => 1.5],
+];
 
+if (isset($_GET['azione']) && $_GET['azione'] === 'svuota') {
+    session_destroy();
+    header("Location: carrello.php");
+    exit;
+}
 
+$totale = 0;
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Carrello</title>
+
+    <style>
+        table, tr, td, th{
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
-    <p> I prodotti nel carrello sono: <?php echo $_SESSION["counter"]; ?></p>
+    <h1>Carrello</h1>
 
-    <form action="svuota.php">
-        <button type="submit">SVUOTA</button>
-    </form>
+    <?php 
+        if (empty($_SESSION['carrello']))
+            echo "<p>Il carrello è vuoto.</p>";
+
+        else{
+            echo "<table>";
+                echo "<tr>";
+                    echo "<th>Nome</th>";
+                    echo "<th>Prezzo</th>";
+                    echo "<th>Quantità</th>";
+                    echo "<th>Subtotale</th>";
+                echo "</tr>";
+
+            foreach ($_SESSION['carrello'] as $id => $quantita) {
+                $subtotale = $prodotti[$id]['prezzo'] * $quantita;
+                $totale += $subtotale;
+                
+                echo "<tr>";
+                    echo "<td>".$prodotti[$id]['nome']."</td>";
+                    echo "<td>".number_format($prodotti[$id]['prezzo'], 2)."€</td>";
+                    echo "<td> $quantita </td>";
+                    echo "<td>".number_format($subtotale, 2)." €</td>";
+                echo "</tr>";
+            }
+
+                echo "<tr>";
+                    echo "<td colspan='3'><strong>Totale</strong></td>";
+                    echo "<td><strong>".number_format($totale, 2)."€</strong></td>";
+                echo "</tr>";
+            echo "</table>";
+
+            echo "<br>";
+            
+            echo "<a href='carrello.php?azione=svuota'><button>Svuota carrello</button></a>";
+        }
+    ?>
+
+    <br><br>
+    <a href="prodotti.php"><button>Continua lo shopping</button></a>
 </body>
 </html>

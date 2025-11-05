@@ -1,66 +1,88 @@
 <?php
+session_start();
 
-    session_start();
+$prodotti = [
+    1 => ["nome" => "Mela", "prezzo" => 0.5],
+    2 => ["nome" => "Banana", "prezzo" => 0.3],
+    3 => ["nome" => "Latte", "prezzo" => 1.2],
+    4 => ["nome" => "Pane", "prezzo" => 1.5],
+];
 
-    class Prodotto{
-        public $id;
-        public $nome;
-        public $prezzo;
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_prodotto'])) {
+    $id = (int)$_POST['id_prodotto'];
 
-        function __construct($id, $nome, $prezzo){
-            $this->id = $id;
-            $this->nome = $nome;
-            $this->prezzo = $prezzo;
-        }
-    }
+    if (!isset($_SESSION['carrello']))
+        $_SESSION['carrello'] = [];
 
-    $p1 = new Prodotto(1, "p1", 109.99); 
-    $p2 = new Prodotto(1, "p2", 9.99); 
-    $p3 = new Prodotto(1, "p3", 10.99); 
-    $p4 = new Prodotto(1, "p4", 19.99); 
 
-    $_SESSION["prodotti"] = [
-        $p1,    
-        $p2,    
-        $p3,    
-        $p4    
-    ];
+    (!isset($_SESSION['carrello'][$id])) ? $_SESSION['carrello'][$id] = 1 : $_SESSION['carrello'][$id]++;
+    
+    header('Location: prodotti.php');
 
+    $messaggio = "Prodotto aggiunto al carrello!";
+}
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Prodotti</title>
+    <style>
+        table, tr, td, th{
+            border: 1px solid black;
+            border-collapse: collapse;
+            padding: 5px;
+        }
+    </style>
 </head>
 <body>
+    <h1>Lista Prodotti</h1>
 
-    <a href="carrello.php">
-        <button type="submit">VAI AL CARRELLO</button>
-    </a>
+    <?php if (isset($messaggio)) echo $messaggio; ?>
 
-
-    <div>
+    <table>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Prezzo</th>
+            <th>Azione</th>
+        </tr>
         <?php
-            foreach ($prodotti as $key) {
-                echo <<<EOL
-                <form action="" method="GET" style="border:black thin solid">
-                    <h5>PRODOTTO 4</h5>
-                    <p>prezzo: €19,99</p>
-                    <button type="submit" onclick="aggiunto()" >aggiungi al carrello</button>
-                    <input type="hidden" name="id" value="$key->id">
-                </form> <br>
-                EOL;
-            } 
-        ?>
-    </div>
+        foreach ($prodotti as $id => $prodotto){
 
-    <script>
-        function aggiunto(){
-            alert("AGGIUNTO AL CARRELLO")
+            echo "<tr>";
+                echo "<td> $id </td>";
+                echo "<td>" . $prodotto['nome'] . "</td>";
+                echo "<td>" . number_format($prodotto['prezzo'], 2) . "€</td>";
+                echo "<td>";
+                    echo "<form method='POST'>";
+                        echo "<input type='hidden' name='id_prodotto' value=$id>";
+                        echo "<button type='submit'>Aggiungi al carrello</button>";
+                    echo "</form>";
+                echo "</td>";
+            echo "</tr>";
+        } 
+        ?>
+    </table>
+
+    <br>
+    
+    <?php
+        if (isset($_SESSION['carrello'])){
+            $totaleProdotti = 0;
+            foreach ($_SESSION['carrello'] as $id => $quantita){
+                $totaleProdotti += $quantita;
+            }
+            echo "Prodotti nel carrello: $totaleProdotti";
         }
-    </script>
+        
+        else
+            echo "Prodotti nel carrello: 0";
+    ?>
+
+    <br>
+    <br>
+    <a href="carrello.php"><button>Vai al Carrello</button></a>
 </body>
 </html>
