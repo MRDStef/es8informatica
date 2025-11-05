@@ -29,11 +29,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_prodotto'])) {
     <meta charset="UTF-8">
     <title>Prodotti</title>
     <style>
+        
+        html, body{
+            font-family: Arial, sans-serif;
+        }
+
+        body{
+            background-color: #555555ff;
+            color: #e9e9e9ff;
+            margin: 20px;
+            text-align: center;
+            font-size: 28px;
+        }
+        
+        
         table, tr, td, th{
-            border: 1px solid black;
+            background-color: #ffffff;
+            color: #000000;
+            border: 3px solid black;
             border-collapse: collapse;
             padding: 5px;
+            margin: 0 auto;
         }
+
+        button{
+            font-size: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #65eb6aff;
+
+            border-radius: 15px;
+        }
+        
     </style>
 </head>
 <body>
@@ -58,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_prodotto'])) {
                 echo "<td>";
                     echo "<form method='POST'>";
                         echo "<input type='hidden' name='id_prodotto' value=$id>";
-                        echo "<button type='submit'>Aggiungi al carrello</button>";
+                        echo "<button type='submit'> + </button>";
                     echo "</form>";
                 echo "</td>";
             echo "</tr>";

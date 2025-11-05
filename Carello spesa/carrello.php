@@ -24,10 +24,35 @@ $totale = 0;
     <title>Carrello</title>
 
     <style>
+                html, body{
+            font-family: Arial, sans-serif;
+        }
+
+        body{
+            background-color: #555555ff;
+            color: #e9e9e9ff;
+            margin: 20px;
+            text-align: center;
+            font-size: 28px;
+        }
+        
+        
         table, tr, td, th{
-            border: 1px solid black;
+            background-color: #ffffff;
+            color: #000000;
+            border: 3px solid black;
             border-collapse: collapse;
             padding: 5px;
+            margin: 0 auto;
+        }
+
+        button{
+            font-size: 20px;
+            padding: 5px 10px;
+            cursor: pointer;
+            background-color: #65eb6aff;
+
+            border-radius: 15px;
         }
     </style>
 </head>
